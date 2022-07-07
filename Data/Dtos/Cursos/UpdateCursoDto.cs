@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CastCursos.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace CastCursos.Data.Dtos
 {
@@ -15,7 +16,6 @@ namespace CastCursos.Data.Dtos
         [Required]
         [Range(0, int.MaxValue, ErrorMessage = "Quantidade não pode ser menor que 0.")]
         public int Vagas { get; set; }
-        [Required]
-        public string Categoria { get; set; }
+        public int CategoriaId { get; set; }
     }
 }

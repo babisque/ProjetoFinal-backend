@@ -4,6 +4,7 @@ using CastCursos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CastCursos.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220707171921_Removendo deleção em cascata da relação Curso e Categoria")]
+    partial class RemovendodeleçãoemcascatadarelaçãoCursoeCategoria
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,6 +58,10 @@ namespace CastCursos.Migrations
                     b.Property<DateTime>("DataTermino")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -73,31 +79,6 @@ namespace CastCursos.Migrations
                     b.ToTable("Cursos");
                 });
 
-            modelBuilder.Entity("CastCursos.Models.Log", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("CursoId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DataCriacao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DataModificacao")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CursoId")
-                        .IsUnique();
-
-                    b.ToTable("Log");
-                });
-
             modelBuilder.Entity("CastCursos.Models.Curso", b =>
                 {
                     b.HasOne("CastCursos.Models.Categoria", "Categoria")
@@ -109,26 +90,9 @@ namespace CastCursos.Migrations
                     b.Navigation("Categoria");
                 });
 
-            modelBuilder.Entity("CastCursos.Models.Log", b =>
-                {
-                    b.HasOne("CastCursos.Models.Curso", "Curso")
-                        .WithOne("Log")
-                        .HasForeignKey("CastCursos.Models.Log", "CursoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Curso");
-                });
-
             modelBuilder.Entity("CastCursos.Models.Categoria", b =>
                 {
                     b.Navigation("Cursos");
-                });
-
-            modelBuilder.Entity("CastCursos.Models.Curso", b =>
-                {
-                    b.Navigation("Log")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
