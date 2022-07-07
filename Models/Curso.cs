@@ -20,5 +20,7 @@ namespace CastCursos.Models
         public int Vagas { get; set; }
         [Required]
         public string Categoria { get; set; }
+        [Required]
+        public bool Status { get; set; }
     }
 }
