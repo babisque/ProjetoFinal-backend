@@ -4,6 +4,6 @@
     {
         public int CursoId { get; set; }
         public DateTime DataCriacao { get; set; }
-        public DateTime DataModificacao { get; set; }
+        public DateTime? DataModificacao { get; set; }
     }
 }

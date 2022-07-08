@@ -31,6 +31,14 @@ namespace CastCursos.Controllers
             return NotFound();
         }
 
+        [HttpGet]
+        public IActionResult RecuperaCategorias()
+        {
+            var categorias = _context.Categorias.ToList();
+            var categoriasDto = _mapper.Map<ReadCategoriaDto>(categorias);
+            return Ok(categoriasDto);
+        }
+
         [HttpPost]
         public IActionResult AdicionaCategoria([FromBody] CreateCategoriaDto categoriaDto)
         {

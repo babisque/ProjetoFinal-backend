@@ -7,7 +7,7 @@ namespace CastCursos.Data
     {
         public DbSet<Curso> Cursos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
-        public DbSet<Log> Logs { get; set; }
+        public DbSet<Log> Log { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {

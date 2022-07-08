@@ -23,7 +23,7 @@ namespace CastCursos.Controllers
         public IActionResult AdicionaLog([FromBody] CreateLogDto logDto)
         {
             var log = _mapper.Map<Log>(logDto);
-            _context.Logs.Add(log);
+            _context.Log.Add(log);
             _context.SaveChanges();
             return CreatedAtAction(nameof(RecuperaPorId), new { Id = log.Id }, log);
         }
@@ -31,11 +31,25 @@ namespace CastCursos.Controllers
         [HttpGet("{id}")]
         public IActionResult RecuperaPorId(int id)
         {
-            var log = _context.Logs.FirstOrDefault(l => l.Id == id);
+            var log = _context.Log.FirstOrDefault(l => l.Id == id);
             if (log != null)
             {
                 var logDto = _mapper.Map<ReadLogDto>(log);
                 return Ok(logDto);
+            }
+
+            return NotFound();
+        }
+
+        [HttpGet]
+        public IActionResult RecuperaLogs()
+        {
+            var logs = _context.Log.ToList();
+
+            if (logs != null)
+            {
+                var logsDto = _mapper.Map<List<ReadLogDto>>(logs);
+                return Ok(logsDto);
             }
 
             return NotFound();

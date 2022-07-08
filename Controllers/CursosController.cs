@@ -23,29 +23,37 @@ namespace CastCursos.Controllers
         [HttpPost]
         public IActionResult AdicionaCurso([FromBody] CreateCursoDto cursoDto)
         {
-            var curso = _mapper.Map<Curso>(cursoDto);            
+            var curso = _mapper.Map<Curso>(cursoDto);
+            curso.Status = true;
             _context.Cursos.Add(curso);
             _context.SaveChanges();
 
-            //var logDto = new CreateLogDto
-            //{
-            //    CursoId = curso.Id,
-            //    DataCriacao = DateTime.Now,
-            //    DataModificacao = DateTime.Now
-            //};
+            var logDto = new CreateLogDto
+            {
+                CursoId = curso.Id,
+                DataCriacao = DateTime.Now,
+                DataModificacao = null
+            };
 
-            //var log = _mapper.Map<Log>(logDto);
-            //_context.Logs.Add(log);
-            //_context.SaveChanges();
+            var log = _mapper.Map<Log>(logDto);
+            _context.Log.Add(log);
+            _context.SaveChanges();
 
-            //Console.WriteLine(log);
             return CreatedAtAction(nameof(RecuperaPorId), new { Id = curso.Id }, curso);
         }
 
         [HttpGet]
         public IActionResult RecuperaCursos()
         {
-            return Ok(_context.Cursos);
+            var cursos = _context.Cursos.Where(curso => curso.Status == true).ToList();
+            
+            if (cursos != null)
+            {
+                var cursosDto = _mapper.Map<List<ReadCursoDto>>(cursos);
+                return Ok(cursosDto);
+            }
+
+            return NotFound();
         }
 
         [HttpGet("{id}")]
