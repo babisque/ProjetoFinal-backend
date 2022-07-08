@@ -79,7 +79,12 @@ namespace CastCursos.Controllers
                 return NotFound();
             }
             _mapper.Map(cursoDto, curso);
+
+            var log = _context.Log.FirstOrDefault(log => log.CursoId == id);
+            log.DataModificacao = DateTime.Now;
+            
             _context.SaveChanges();
+
             return NoContent();
         }
 

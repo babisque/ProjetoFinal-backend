@@ -8,8 +8,6 @@ namespace CastCursos.Data.Dtos
         [Required]
         public string Nome { get; set; }
         [Required]
-        public string Descricao { get; set; }
-        [Required]
         public DateTime DataInicio { get; set; }
         [Required]
         public DateTime DataTermino { get; set; }
