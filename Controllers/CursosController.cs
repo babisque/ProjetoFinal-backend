@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CastCursos.Data;
 using CastCursos.Data.Dtos;
+using CastCursos.Data.Dtos.Logs;
 using CastCursos.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,16 +23,37 @@ namespace CastCursos.Controllers
         [HttpPost]
         public IActionResult AdicionaCurso([FromBody] CreateCursoDto cursoDto)
         {
-            Curso curso = _mapper.Map<Curso>(cursoDto);
+            var curso = _mapper.Map<Curso>(cursoDto);
+            curso.Status = true;
             _context.Cursos.Add(curso);
             _context.SaveChanges();
+
+            var logDto = new CreateLogDto
+            {
+                CursoId = curso.Id,
+                DataCriacao = DateTime.Now,
+                DataModificacao = null
+            };
+
+            var log = _mapper.Map<Log>(logDto);
+            _context.Log.Add(log);
+            _context.SaveChanges();
+
             return CreatedAtAction(nameof(RecuperaPorId), new { Id = curso.Id }, curso);
         }
 
         [HttpGet]
         public IActionResult RecuperaCursos()
         {
-            return Ok(_context.Cursos);
+            var cursos = _context.Cursos.Where(curso => curso.Status == true).ToList();
+            
+            if (cursos != null)
+            {
+                var cursosDto = _mapper.Map<List<ReadCursoDto>>(cursos);
+                return Ok(cursosDto);
+            }
+
+            return NotFound();
         }
 
         [HttpGet("{id}")]
