@@ -24,12 +24,17 @@ namespace CastCursos.Controllers
         public IActionResult AdicionaCurso([FromBody] CreateCursoDto cursoDto)
         {
             var curso = _mapper.Map<Curso>(cursoDto);
-            var cursosInicio = _context.Cursos.Where(c => c.DataInicio == curso.DataInicio);
-            var cursosTermino = _context.Cursos.Where(c => c.DataTermino == curso.DataTermino);
-            
-            if (cursosInicio.Count() > 0 || cursosTermino.Count() > 0) return BadRequest();
+            var cursosPorData = _context.Cursos.Where(c => ((curso.DataInicio >= c.DataInicio && curso.DataInicio <= c.DataTermino) ||
+                                                     (curso.DataTermino >= c.DataInicio && curso.DataTermino <= c.DataTermino) ||
+                                                     (c.DataInicio >= curso.DataInicio && c.DataInicio <= curso.DataTermino)) &&
+                                                     (c.Status == true));
 
-            if (curso.DataInicio >= DateTime.Now)
+            if (cursosPorData.Count() > 0)
+            {
+                return StatusCode(400, "Existe(m) curso(s) planejados(s) dentro do período informado.");
+            }
+            
+            if (curso.DataInicio >= DateTime.Now || curso.DataInicio <= curso.DataTermino)
             {
                 curso.Status = true;
                 _context.Cursos.Add(curso);
@@ -49,7 +54,7 @@ namespace CastCursos.Controllers
                 return CreatedAtAction(nameof(RecuperaPorId), new { Id = curso.Id }, curso);
             }
             
-            return BadRequest();
+            return StatusCode(400, "Data inválida.");
         }
 
         [HttpGet]
@@ -105,6 +110,9 @@ namespace CastCursos.Controllers
             if (curso == null)
             {
                 return NotFound();
+            } else if (curso.DataTermino >= DateTime.Now || curso.DataInicio <= DateTime.Now)
+            {
+                return StatusCode(400, "Não é possível deletar um curso iniciado ou já finalizado.");
             }
             curso.Status = false;
             _context.SaveChanges();

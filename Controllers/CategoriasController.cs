@@ -34,9 +34,11 @@ namespace CastCursos.Controllers
         [HttpGet]
         public IActionResult RecuperaCategorias()
         {
-            var categorias = _context.Categorias.ToList();
-            var categoriasDto = _mapper.Map<ReadCategoriaDto>(categorias);
-            return Ok(categoriasDto);
+            //var categorias = _context.Categorias.ToList();
+            //var categoriasDto = _mapper.Map<ReadCategoriaDto>(categorias);
+            //return Ok(categoriasDto);
+
+            return Ok(_context.Categorias.ToList());
         }
 
         [HttpPost]

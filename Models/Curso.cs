@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace CastCursos.Models
 {
-    public class Curso : IValidatableObject
+    public class Curso
     {
         [Key]
         [Required]
@@ -23,10 +23,5 @@ namespace CastCursos.Models
         public virtual Log Log { get; set; }
         public virtual Categoria Categoria { get; set; }
         public int CategoriaId { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            
-        }
     }
 }
