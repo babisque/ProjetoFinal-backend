@@ -194,8 +194,10 @@ O front-end ficou bem simples, utilizando Angular com Bootstrap para estilizar, 
 ### Demonstração
 
 Fazendo o teste de inserção:
-#### Sem preencher um campo  
+#### Sem preencher um campo
+
 ![Captura de tela do formulário de inserção.](/miscs/imgs/01.png)
+
 
 Ao preencher tudo corretamente
   
