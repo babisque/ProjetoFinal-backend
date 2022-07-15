@@ -23,37 +23,57 @@ namespace CastCursos.Controllers
         [HttpPost]
         public IActionResult AdicionaCurso([FromBody] CreateCursoDto cursoDto)
         {
-            var curso = _mapper.Map<Curso>(cursoDto);
-            curso.Status = true;
-            _context.Cursos.Add(curso);
-            _context.SaveChanges();
+            var curso = _mapper.Map<Curso>(cursoDto); // mapeia as informações da requisição para a classe modelo
+            var cursosPorData = _context.Cursos.Where(c => ((curso.DataInicio >= c.DataInicio && curso.DataInicio <= c.DataTermino) ||
+                                                     (curso.DataTermino >= c.DataInicio && curso.DataTermino <= c.DataTermino) ||
+                                                     (c.DataInicio >= curso.DataInicio && c.DataInicio <= curso.DataTermino)) &&
+                                                     (c.Status == true)); // seleção no banco de dados para garantir que não haja curso dentro deste período
 
-            var logDto = new CreateLogDto
+            var cursoPorNome = _context.Cursos.Where(c => curso.Nome == c.Nome && c.Status == true);
+
+            if (cursosPorData.Count() > 0)
             {
-                CursoId = curso.Id,
-                DataCriacao = DateTime.Now,
-                DataModificacao = null
-            };
+                return StatusCode(400, "Existe(m) curso(s) planejados(s) dentro do período informado.");
+            } else if (cursoPorNome.Count() > 0)
+            {
+                return StatusCode(400, "Curso já cadastrado.");
+            }
+            
+            if (curso.DataInicio >= DateTime.Now || curso.DataInicio <= curso.DataTermino)
+            {
+                curso.Status = true;
+                _context.Cursos.Add(curso);
+                _context.SaveChanges();
 
-            var log = _mapper.Map<Log>(logDto);
-            _context.Log.Add(log);
-            _context.SaveChanges();
+                var logDto = new CreateLogDto
+                {
+                    CursoId = curso.Id,
+                    DataCriacao = DateTime.Now.Date,
+                    DataModificacao = null
+                };
 
-            return CreatedAtAction(nameof(RecuperaPorId), new { Id = curso.Id }, curso);
+                var log = _mapper.Map<Log>(logDto);
+                _context.Log.Add(log);
+                _context.SaveChanges();
+
+                return CreatedAtAction(nameof(RecuperaPorId), new { Id = curso.Id }, curso);
+            }
+            
+            return StatusCode(400, "Data inválida.");
         }
 
         [HttpGet]
         public IActionResult RecuperaCursos()
         {
-            var cursos = _context.Cursos.Where(curso => curso.Status == true).ToList();
-            
-            if (cursos != null)
-            {
-                var cursosDto = _mapper.Map<List<ReadCursoDto>>(cursos);
-                return Ok(cursosDto);
-            }
+                var cursos = _context.Cursos.Where(curso => curso.Status == true).ToList();
 
-            return NotFound();
+                if (cursos != null)
+                {
+                    var cursosDto = _mapper.Map<List<ReadCursoDto>>(cursos);
+                    return Ok(cursosDto);
+                }
+
+                return NotFound();
         }
 
         [HttpGet("{id}")]
@@ -61,7 +81,7 @@ namespace CastCursos.Controllers
         {
             var curso = _context.Cursos.FirstOrDefault(curso => curso.Id == id);
 
-            if(curso != null)
+            if (curso != null)
             {
                 ReadCursoDto cursoDto = _mapper.Map<ReadCursoDto>(curso);
                 return Ok(cursoDto);
@@ -76,13 +96,24 @@ namespace CastCursos.Controllers
             var curso = _context.Cursos.FirstOrDefault(curso => curso.Id == id);
             if (curso == null)
             {
-                return NotFound();
+                return NotFound("Curso não encontrado.");
             }
+            
             _mapper.Map(cursoDto, curso);
 
+            var cursosPorData = _context.Cursos.Where(c => ((curso.DataInicio >= c.DataInicio && curso.DataInicio <= c.DataTermino) ||
+                                                     (curso.DataTermino >= c.DataInicio && curso.DataTermino <= c.DataTermino) ||
+                                                     (c.DataInicio >= curso.DataInicio && c.DataInicio <= curso.DataTermino)) &&
+                                                     (c.Status == true && curso.Id != c.Id));
+
+            if (cursosPorData.Count() > 0)
+            {
+                return StatusCode(400, "Existe(m) curso(s) planejados(s) dentro do período informado.");
+            }
+
             var log = _context.Log.FirstOrDefault(log => log.CursoId == id);
-            log.DataModificacao = DateTime.Now;
-            
+            log.DataModificacao = DateTime.Now.Date;
+
             _context.SaveChanges();
 
             return NoContent();
@@ -95,8 +126,12 @@ namespace CastCursos.Controllers
             if (curso == null)
             {
                 return NotFound();
+            } else if (curso.DataTermino <= DateTime.Now)
+            {
+                return StatusCode(400, "Não é possível deletar um curso iniciado ou já finalizado.");
             }
-            _context.Remove(curso);
+
+            curso.Status = false;
             _context.SaveChanges();
             return NoContent();
         }
