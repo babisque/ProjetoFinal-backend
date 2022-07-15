@@ -90,7 +90,7 @@ Com isso, todas as regras de negócio do cliente foram respeitas. Para garantir 
 
 #### GET
 
-O GET neste momento só foram criado dois, um que retorne todos os cursos, e um para retornar com filtros de data. O primeiro que retorna todos os cursos apenas teve uma regra, que são os cursos que carregam com si o Status true, pois quando apagados, apenas é alterado o seu Status para false, assim, garante que o curso continuará no banco de dados para consultas posteriores.
+O GET retorna todos os cursos apenas teve uma regra, que são os cursos que carregam com si o Status true, pois quando apagados, apenas é alterado o seu Status para false, assim, garante que o curso continuará no banco de dados para consultas posteriores.
 ```
 [HttpGet]
 public IActionResult RecuperaCursos()
