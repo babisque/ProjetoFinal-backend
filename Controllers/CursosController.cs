@@ -23,7 +23,7 @@ namespace CastCursos.Controllers
         [HttpPost]
         public IActionResult AdicionaCurso([FromBody] CreateCursoDto cursoDto)
         {
-            var curso = _mapper.Map<Curso>(cursoDto); // mapeia as informações da requisição para a classe modelo
+            var curso = _mapper.Map<Curso>(cursoDto); // mapea as informações da requisição para a classe modelo
             var cursosPorData = _context.Cursos.Where(c => ((curso.DataInicio >= c.DataInicio && curso.DataInicio <= c.DataTermino) ||
                                                      (curso.DataTermino >= c.DataInicio && curso.DataTermino <= c.DataTermino) ||
                                                      (c.DataInicio >= curso.DataInicio && c.DataInicio <= curso.DataTermino)) &&
@@ -39,7 +39,7 @@ namespace CastCursos.Controllers
                 return StatusCode(400, "Curso já cadastrado.");
             }
             
-            if (curso.DataInicio >= DateTime.Now || curso.DataInicio <= curso.DataTermino)
+            if (curso.DataInicio >= DateTime.Now && curso.DataInicio <= curso.DataTermino)
             {
                 curso.Status = true;
                 _context.Cursos.Add(curso);
