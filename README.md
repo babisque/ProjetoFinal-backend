@@ -223,4 +223,4 @@ Fazendo o teste de inserção:
 
 #### Tentando cadastrar um curso com uma data menor que a data atual
   
-![](miscs/imgs//06.png)
+![Imagem mostrando erro da tentativa de adicionar um curso com a data de inicio menor que a data atual](./miscs/imgs//06.png)
