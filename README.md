@@ -194,20 +194,33 @@ O front-end ficou bem simples, utilizando Angular com Bootstrap para estilizar, 
 ### Demonstração
 
 Fazendo o teste de inserção:
-* Sem preencher um campo
-  ![Captura de tela do formulário de inserção.](/miscs/imgs/01.png)
 
-* Ao preencher tudo corretamente
-  ![Tela com todos os cursos listados.](miscs/imgs/02.png)
 
-* Erro ao tentar inserir um curso que tem o mesmo período de outro
-  ![Tela com erro de um curso sendo criado no período que outro ocorre.](miscs/imgs/03.png)
+#### Sem preencher um campo
 
-* Inserindo de forma correta
-  ![Curso adicionado com sucesso.](miscs/imgs/04.png)
+![Captura de tela do formulário de inserção.](/miscs/imgs/01.png)
 
-* Tentando atualizar ele para a mesma data de outro curso
-  ![Teste de atualização com data já cadastrada](miscs/imgs//05.png)
 
-* Tentando cadastrar um curso com uma data menor que a data atual
-  ![](miscs/imgs//06.png)
+#### Ao preencher tudo corretamente
+  
+![Tela com todos os cursos listados.](miscs/imgs/02.png)
+
+
+#### Erro ao tentar inserir um curso que tem o mesmo período de outro
+  
+![Tela com erro de um curso sendo criado no período que outro ocorre.](miscs/imgs/03.png)
+
+
+#### Inserindo de forma correta
+  
+![Curso adicionado com sucesso.](miscs/imgs/04.png)
+
+
+#### Tentando atualizar ele para a mesma data de outro curso
+  
+![Teste de atualização com data já cadastrada](miscs/imgs//05.png)
+
+
+#### Tentando cadastrar um curso com uma data menor que a data atual
+  
+![](miscs/imgs//06.png)
